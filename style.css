@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap'); /* Noto Sans KR 폰트 임포트 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
@@ -16,7 +16,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 95%;
-    max-width: 1000px;
+    max-width: 1200px;
     text-align: center;
 }
 
@@ -27,36 +27,135 @@ h1 {
     font-weight: 700;
 }
 
-#course-info {
-    display: flex; /* 가로 정렬 */
-    justify-content: center; /* 가운데 정렬 */
-    gap: 20px; /* 요소 간 간격 */
-    margin-bottom: 30px; /* 스코어카드 테이블과의 간격 */
-    padding: 15px;
+/* 골프장 이름 및 코스 입력 필드 영역 */
+#course-info-input-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    align-items: flex-end;
     background-color: #f9f9f9;
+    padding: 15px;
     border-radius: 8px;
     border: 1px solid #eee;
+    margin-bottom: 20px;
+}
+#course-info-input-area .input-group {
+    flex-grow: 1;
+    max-width: 400px;
+}
+#course-info-input-area .input-group input[type="text"] {
+    width: 200px;
 }
 
-#course-info .input-group {
-    flex-grow: 1; /* 공간을 균등하게 채우도록 */
-    max-width: 400px; /* 최대 너비 지정 */
-}
 
-
+/* 스코어카드 전체 컨테이너 (이 부분이 이미지 캡처 대상) */
 #scorecard-container {
-    overflow-x: auto;
-    margin-bottom: 30px;
-    border: 1px solid #c0c0c0;
-    border-radius: 5px;
+    display: flex; /* 자식 요소들을 flex로 배치 */
+    flex-wrap: wrap; /* 공간 부족 시 줄바꿈 */
+    justify-content: center; /* 가운데 정렬 */
+    gap: 20px; /* 요소들 간 간격 */
+    margin-bottom: 20px;
+    padding: 20px; /* 캡처 시 여백 확보 */
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+
+    /* 기본 화면 (가로 배치) */
+    flex-direction: row;
+    align-items: flex-start; /* 위쪽 정렬 */
 }
 
-#scorecard-table {
-    width: 100%;
+/* ⭐ 이미지 캡처 시 레이아웃 ⭐ */
+#scorecard-container.capture-layout {
+    flex-direction: column; /* 세로로 정렬 */
+    align-items: center; /* 가운데 정렬 */
+    width: 550px; /* 이미지의 전체 너비 조정 (정사각형 형태를 위해) */
+    padding: 20px; /* 상하좌우 여백 */
+    gap: 15px; /* 세로 정렬 시 요소 간 간격 */
+}
+#scorecard-container.capture-layout #course-info-display {
+    width: 100%; /* 골프장 정보도 100% 너비 */
+    margin-bottom: 5px; /* 테이블과의 간격 */
+}
+#scorecard-container.capture-layout .scorecard-table-part {
+    min-width: unset; /* 최소 너비 제한 해제 */
+    width: 100%; /* 너비 꽉 채우기 */
+    margin-bottom: 0; /* 각 테이블 자체의 마진은 없앰 */
+}
+#scorecard-container.capture-layout #scorecard-overall-total {
+    width: 100%; /* 총 합계 테이블도 100% */
+    max-width: 300px; /* 최대 너비는 유지하여 과도하게 늘어나지 않도록 */
+    margin-top: 5px; /* 상단 테이블과의 간격 */
+}
+
+
+/* 골프장 정보 표시 (캡처 시 포함) */
+#course-info-display {
+    text-align: center;
+    margin-bottom: 10px; /* 테이블과의 간격 */
+    width: 100%; /* flex item으로서 꽉 채우기 */
+}
+#golf-course-name-display {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 3px;
+}
+#golf-course-type-display {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+
+/* 개별 스코어 테이블 스타일 */
+.scorecard-table-part {
+    flex-grow: 1;
+    flex-basis: 0; /* flex-grow와 함께 사용 시 유동적으로 늘어남 */
+    min-width: 450px; /* 최소 너비 설정 (9홀 표 너비) */
     border-collapse: collapse;
+    border: 1px solid #c0c0c0; /* 각 테이블 외곽선 */
+    border-radius: 5px;
+    overflow: hidden; /* 둥근 모서리 적용 */
 }
 
-#scorecard-table th, #scorecard-table td {
+/* 총 합계 테이블 */
+#scorecard-overall-total {
+    flex-basis: 100%; /* 화면에서는 한 줄 전체 차지 */
+    max-width: 280px; /* 총 합계 테이블 너비 제한 */
+    border: none;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+#scorecard-overall-total tfoot tr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+}
+#scorecard-overall-total tfoot th {
+    background-color: transparent;
+    color: #222222;
+    text-align: left;
+    font-size: 1.1em;
+    padding: 0;
+    border: none;
+}
+#scorecard-overall-total tfoot td {
+    background-color: transparent;
+    color: #222222;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0;
+    border: none;
+}
+
+
+/* 테이블 셀 공통 스타일 */
+.scorecard-table-part th, .scorecard-table-part td {
     border: 1px solid #dcdcdc;
     padding: 12px 8px;
     text-align: center;
@@ -64,34 +163,28 @@ h1 {
     font-size: 0.95em;
 }
 
-#scorecard-table thead th {
+.scorecard-table-part thead th {
     background-color: #e0e0e0;
     font-weight: bold;
     color: #555555;
     padding: 15px 8px;
 }
 
-#scorecard-table tbody .row-header,
-#scorecard-table tfoot .row-header {
+.scorecard-table-part tbody .row-header {
     background-color: #f0f0f0;
     font-weight: bold;
     color: #444444;
     text-align: left;
     padding-left: 15px;
 }
-#scorecard-table tfoot .row-header {
-    background-color: #cccccc;
-    color: #222222;
-}
 
-
-/* 짝수 행 배경색 (선택 사항) */
-#scorecard-table tbody tr:nth-child(even) {
+.scorecard-table-part tbody tr:nth-child(even) {
     background-color: #fcfcfc;
 }
 
 
-#input-controls {
+/* 스코어 입력 컨트롤 영역 */
+#input-controls-bottom {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -101,10 +194,11 @@ h1 {
     padding: 25px;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    margin-top: 30px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba-0-0-0-0-05;
 }
 
+/* 공통 입력 그룹 스타일 */
 .input-group {
     display: flex;
     flex-direction: column;
@@ -120,7 +214,7 @@ h1 {
 
 .input-group input[type="number"],
 .input-group select,
-.input-group input[type="text"] { /* text 타입 input 추가 */
+.input-group input[type="text"] {
     padding: 10px 12px;
     border: 1px solid #dddddd;
     border-radius: 5px;
@@ -128,10 +222,6 @@ h1 {
     width: 120px;
     box-sizing: border-box;
 }
-#course-info .input-group input[type="text"] {
-    width: 200px; /* 골프장 이름/코스 입력 필드 너비 조정 */
-}
-
 
 /* Number input 스핀 버튼 숨기기 */
 input[type="number"]::-webkit-outer-spin-button,
@@ -143,7 +233,7 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-
+/* 버튼 스타일 */
 button {
     background-color: #4CAF50;
     color: white;
@@ -174,22 +264,37 @@ button:active {
     background-color: #0069d9;
 }
 
-/* 모바일 화면을 위한 반응형 */
-@media (max-width: 768px) {
-    #course-info {
-        flex-direction: column; /* 세로로 정렬 */
-        align-items: center; /* 가운데 정렬 */
+/* 반응형 디자인 */
+@media (max-width: 900px) {
+    /* 화면 표시 (capture-layout이 아닐 때) */
+    #scorecard-container:not(.capture-layout) {
+        flex-direction: column; /* 태블릿/모바일에서 테이블 세로 정렬 */
+        align-items: center;
+        gap: 15px; /* 세로 정렬 시 요소 간 간격 */
     }
-    #course-info .input-group {
-        width: 100%; /* 너비 꽉 채우기 */
-        max-width: none;
-    }
-    #course-info .input-group input[type="text"] {
+    #scorecard-container:not(.capture-layout) .scorecard-table-part {
+        min-width: unset;
         width: 100%;
     }
-    #input-controls {
+    #scorecard-overall-total {
+        width: 100%; /* 총 합계 테이블도 100% */
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    #course-info-input-area,
+    #input-controls-bottom {
         flex-direction: column;
         align-items: center;
+        gap: 15px; /* 세로 정렬 시 요소 간 간격 */
+    }
+    .input-group {
+        width: 100%;
+        max-width: none;
+    }
+    #course-info-input-area .input-group input[type="text"] {
+        width: 100%;
     }
     .input-group input[type="number"],
     .input-group select {

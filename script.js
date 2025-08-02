@@ -1,22 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
     // DOM 요소 캐싱
-    const $ = (selector) => document.querySelector(selector); // 짧은 셀렉터 함수
-    const $$ = (selector) => document.querySelectorAll(selector); // 여러 요소 선택 함수
+    const $ = (selector) => document.querySelector(selector);
 
-    const scorecardTableHeadRow = $('#scorecard-table thead tr');
-    const shotsRow = $('#shots-row');
-    const puttsRow = $('#putts-row');
-    const totalRow = $('#total-row');
-    const totalFooterRow = $('#scorecard-table tfoot tr');
+    // OUT 코스 테이블 요소
+    const scorecardTableOutHeadRow = $('#scorecard-table-out thead tr');
+    const shotsRowOut = $('#shots-row-out');
+    const puttsRowOut = $('#putts-row-out');
+    const totalRowOut = $('#total-row-out');
+
+    // IN 코스 테이블 요소
+    const scorecardTableInHeadRow = $('#scorecard-table-in thead tr');
+    const shotsRowIn = $('#shots-row-in');
+    const puttsRowIn = $('#putts-row-in');
+    const totalRowIn = $('#total-row-in');
+
+    // 총 합계 테이블 요소
+    const overallTotalValueCell = $('#overall-total-value');
+
+    // 입력 컨트롤 요소
     const holeNumberSelect = $('#hole-number');
     const shotsInput = $('#shots');
     const puttsInput = $('#putts');
     const recordScoreBtn = $('#record-score-btn');
     const saveAsImageBtn = $('#save-as-image-btn');
-    const scorecardContainer = $('#scorecard-container'); // 이미지 저장 대상
 
-    const golfCourseNameInput = $('#golf-course-name'); // 골프장 이름 입력 필드
-    const golfCourseTypeInput = $('#golf-course-type'); // 코스 입력 필드
+    // 캡처 대상 컨테이너
+    const scorecardContainer = $('#scorecard-container');
+
+    // 골프장 이름 및 코스 입력/표시 요소
+    const golfCourseNameInput = $('#golf-course-name');
+    const golfCourseTypeInput = $('#golf-course-type');
+    const golfCourseNameDisplay = $('#golf-course-name-display');
+    const golfCourseTypeDisplay = $('#golf-course-type-display');
 
 
     const numberOfHoles = 18;
@@ -32,51 +47,80 @@ document.addEventListener('DOMContentLoaded', () => {
             holeNumberSelect.appendChild(option);
         }
 
-        // 스코어카드 테이블 헤더 및 셀 초기 생성 (1~18번 홀, OUT, IN, TOTAL)
-        for (let i = 1; i <= numberOfHoles; i++) {
+        // OUT 코스 (1-9 홀) 테이블 헤더 및 셀 초기 생성
+        for (let i = 1; i <= 9; i++) {
             const th = document.createElement('th');
             th.textContent = i;
-            scorecardTableHeadRow.appendChild(th);
+            scorecardTableOutHeadRow.appendChild(th);
 
-            // tbody의 각 행에 빈 td 추가
-            shotsRow.appendChild(document.createElement('td'));
-            puttsRow.appendChild(document.createElement('td'));
-            totalRow.appendChild(document.createElement('td'));
+            shotsRowOut.appendChild(document.createElement('td'));
+            puttsRowOut.appendChild(document.createElement('td'));
+            totalRowOut.appendChild(document.createElement('td'));
         }
+        // OUT 합계 헤더 및 셀 추가
+        const outTh = document.createElement('th');
+        outTh.textContent = 'OUT';
+        scorecardTableOutHeadRow.appendChild(outTh);
+        shotsRowOut.appendChild(document.createElement('td'));
+        puttsRowOut.appendChild(document.createElement('td'));
+        totalRowOut.appendChild(document.createElement('td'));
 
-        // OUT, IN, TOTAL 헤더 및 셀 추가
-        const summaryHeaders = ['OUT', 'IN', 'TOTAL'];
-        summaryHeaders.forEach(headerText => {
+
+        // IN 코스 (10-18 홀) 테이블 헤더 및 셀 초기 생성
+        for (let i = 10; i <= 18; i++) {
             const th = document.createElement('th');
-            th.textContent = headerText;
-            scorecardTableHeadRow.appendChild(th);
+            th.textContent = i;
+            scorecardTableInHeadRow.appendChild(th);
 
-            shotsRow.appendChild(document.createElement('td'));
-            puttsRow.appendChild(document.createElement('td'));
-            totalRow.appendChild(document.createElement('td'));
-        });
+            shotsRowIn.appendChild(document.createElement('td'));
+            puttsRowIn.appendChild(document.createElement('td'));
+            totalRowIn.appendChild(document.createElement('td'));
+        }
+        // IN 및 TOTAL 합계 헤더 및 셀 추가
+        const inTh = document.createElement('th');
+        inTh.textContent = 'IN';
+        scorecardTableInHeadRow.appendChild(inTh);
+        shotsRowIn.appendChild(document.createElement('td'));
+        puttsRowIn.appendChild(document.createElement('td'));
+        totalRowIn.appendChild(document.createElement('td'));
 
-        // tfoot에 총 합계 셀 추가 (colSpan 조정)
-        const totalOverallCell = document.createElement('td');
-        // colSpan은 th(항목)를 제외한 나머지 모든 셀을 병합해야 하므로 (numberOfHoles + summaryHeaders.length)
-        totalOverallCell.colSpan = numberOfHoles + summaryHeaders.length;
-        totalOverallCell.textContent = '0';
-        totalFooterRow.appendChild(totalOverallCell);
+        const totalTh = document.createElement('th');
+        totalTh.textContent = 'TOTAL';
+        scorecardTableInHeadRow.appendChild(totalTh);
+        shotsRowIn.appendChild(document.createElement('td'));
+        puttsRowIn.appendChild(document.createElement('td'));
+        totalRowIn.appendChild(document.createElement('td'));
 
-        updateScorecard(); // 초기 화면 렌더링
+        updateScorecard(); // 초기 화면 스코어 렌더링
+        updateCourseInfoDisplay(); // 초기 골프장 정보 렌더링
     };
+
+    // 골프장 이름과 코스 정보 표시 업데이트 함수
+    const updateCourseInfoDisplay = () => {
+        // 입력 필드의 값을 가져와서 표시 요소에 업데이트
+        const courseName = golfCourseNameInput.value.trim();
+        const courseType = golfCourseTypeInput.value.trim();
+
+        golfCourseNameDisplay.textContent = courseName || '골프장 이름'; // 입력 없으면 기본 텍스트
+        golfCourseTypeDisplay.textContent = courseType ? `(${courseType})` : '코스 정보'; // 입력 없으면 기본 텍스트
+    };
+
+    // 입력 필드 값 변경 시 골프장 정보 표시 업데이트
+    golfCourseNameInput.addEventListener('input', updateCourseInfoDisplay);
+    golfCourseTypeInput.addEventListener('input', updateCourseInfoDisplay);
+
 
     // 2. 스코어카드 표 업데이트 함수
     const updateScorecard = () => {
-        let outShots = 0, outPutts = 0;
-        let inShots = 0, inPutts = 0;
-        let totalShots = 0, totalPutts = 0;
+        let currentOutShots = 0, currentOutPutts = 0;
+        let currentInShots = 0, currentInPutts = 0;
+        let overallTotalShots = 0, overallTotalPutts = 0;
 
-        for (let i = 1; i <= numberOfHoles; i++) {
-            // 셀 인덱스: row-header(0) 다음부터 홀 셀(1부터)
-            const shotsCell = shotsRow.cells[i];
-            const puttsCell = puttsRow.cells[i];
-            const totalCell = totalRow.cells[i];
+        // OUT 코스 (1-9 홀) 데이터 채우기
+        for (let i = 1; i <= 9; i++) {
+            const shotsCell = shotsRowOut.cells[i]; // row-header(0) 다음부터 홀 셀(1부터)
+            const puttsCell = puttsRowOut.cells[i];
+            const totalCell = totalRowOut.cells[i];
 
             const holeData = scores[i];
 
@@ -85,44 +129,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 puttsCell.textContent = holeData.putts;
                 const holeTotal = holeData.shots + holeData.putts;
                 totalCell.textContent = holeTotal;
-
-                if (i <= 9) { // OUT (1~9번 홀)
-                    outShots += holeData.shots;
-                    outPutts += holeData.putts;
-                } else { // IN (10~18번 홀)
-                    inShots += holeData.shots;
-                    inPutts += holeData.putts;
-                }
-                totalShots += holeData.shots;
-                totalPutts += holeData.putts;
+                currentOutShots += holeData.shots;
+                currentOutPutts += holeData.putts;
             } else {
-                // 입력되지 않은 홀은 빈 칸으로 유지
                 shotsCell.textContent = '';
                 puttsCell.textContent = '';
                 totalCell.textContent = '';
             }
         }
+        // OUT 합계 셀 업데이트
+        const outSummaryColIndex = 10; // 1(항목) + 9(홀) = 10
+        shotsRowOut.cells[outSummaryColIndex].textContent = currentOutShots;
+        puttsRowOut.cells[outSummaryColIndex].textContent = currentOutPutts;
+        totalRowOut.cells[outSummaryColIndex].textContent = currentOutShots + currentOutPutts;
+        
+        overallTotalShots += currentOutShots;
+        overallTotalPutts += currentOutPutts;
 
-        // OUT, IN, TOTAL 값 업데이트 (셀 인덱스 주의)
-        const outColIndex = numberOfHoles + 1;
-        const inColIndex = numberOfHoles + 2;
-        const totalColIndex = numberOfHoles + 3;
+        // IN 코스 (10-18 홀) 데이터 채우기
+        for (let i = 10; i <= 18; i++) {
+            const shotsCell = shotsRowIn.cells[i - 9]; // 10번 홀은 index 1, 11번 홀은 index 2
+            const puttsCell = puttsRowIn.cells[i - 9];
+            const totalCell = totalRowIn.cells[i - 9];
 
-        shotsRow.cells[outColIndex].textContent = outShots;
-        puttsRow.cells[outColIndex].textContent = outPutts;
-        totalRow.cells[outColIndex].textContent = outShots + outPutts;
+            const holeData = scores[i];
 
-        shotsRow.cells[inColIndex].textContent = inShots;
-        puttsRow.cells[inColIndex].textContent = inPutts;
-        totalRow.cells[inColIndex].textContent = inShots + inPutts;
+            if (holeData) {
+                shotsCell.textContent = holeData.shots;
+                puttsCell.textContent = holeData.putts;
+                const holeTotal = holeData.shots + holeData.putts;
+                totalCell.textContent = holeTotal;
+                currentInShots += holeData.shots;
+                currentInPutts += holeData.putts;
+            } else {
+                shotsCell.textContent = '';
+                puttsCell.textContent = '';
+                totalCell.textContent = '';
+            }
+        }
+        // IN 합계 셀 업데이트
+        const inSummaryColIndex = 10; // 1(항목) + 9(홀) = 10
+        shotsRowIn.cells[inSummaryColIndex].textContent = currentInShots;
+        puttsRowIn.cells[inSummaryColIndex].textContent = currentInPutts;
+        totalRowIn.cells[inSummaryColIndex].textContent = currentInShots + currentInPutts;
 
-        shotsRow.cells[totalColIndex].textContent = totalShots;
-        puttsRow.cells[totalColIndex].textContent = totalPutts;
-        const overallTotalScore = totalShots + totalPutts;
-        totalRow.cells[totalColIndex].textContent = overallTotalScore;
+        overallTotalShots += currentInShots;
+        overallTotalPutts += currentInPutts;
 
-        // Footer의 총 합계 업데이트
-        totalFooterRow.cells[0].textContent = overallTotalScore;
+        // TOTAL 합계 셀 업데이트
+        const overallSummaryColIndex = 11; // 1(항목) + 9(홀) + 1(IN) = 11
+        shotsRowIn.cells[overallSummaryColIndex].textContent = overallTotalShots;
+        puttsRowIn.cells[overallSummaryColIndex].textContent = overallTotalPutts;
+        totalRowIn.cells[overallSummaryColIndex].textContent = overallTotalShots + overallTotalPutts;
+
+        // 최종 총 합계 (Footer) 업데이트
+        overallTotalValueCell.textContent = overallTotalShots + overallTotalPutts;
     };
 
     // 3. 이벤트 리스너 설정
@@ -147,27 +208,23 @@ document.addEventListener('DOMContentLoaded', () => {
             puttsInput.value = '2';
         } else {
             alert('모든 홀의 스코어 입력을 완료했습니다!');
-            // 모든 홀 입력 완료 후 입력 필드 비활성화 등 추가 가능
         }
     });
 
     saveAsImageBtn.addEventListener('click', () => {
-        // 이미지 저장 시 골프장 이름과 코스도 캡처 범위에 포함되도록 컨테이너 조정
-        // 현재 scorecardContainer는 테이블만 감싸고 있으므로,
-        // 전체 .container를 캡처하는 것이 더 자연스럽습니다.
-        // 하지만 요청하신 이미지는 스코어 테이블만 캡처하는 느낌이므로,
-        // 기존처럼 scorecardContainer를 캡처하되, 캡처 전에 입력 필드 값들을 업데이트하여 표에 표시할 수 있는 기능을 고려할 수 있습니다.
-        // 여기서는 가장 간단하게 전체 .container를 캡처하도록 변경합니다.
-        html2canvas($('.container'), { // .container 전체를 캡처 대상으로 변경
-            scale: 2,
+        // ⭐ 캡처 전용 클래스 추가 (레이아웃 변경)
+        scorecardContainer.classList.add('capture-layout');
+
+        // html2canvas로 캡처 실행
+        html2canvas(scorecardContainer, {
+            scale: 2, // 고해상도 이미지 (필요에 따라 3 이상으로 높일 수 있음)
             useCORS: true,
-            logging: false, // 배포 시에는 false로 설정
-            backgroundColor: '#ffffff'
+            logging: false,
+            backgroundColor: '#ffffff' // 배경색을 흰색으로 지정
         }).then(canvas => {
             const link = document.createElement('a');
-            // 파일 이름에 골프장 이름과 날짜를 포함 (선택 사항)
             const date = new Date().toISOString().slice(0,10); // YYYY-MM-DD
-            const courseName = golfCourseNameInput.value || '골프스코어카드';
+            const courseName = golfCourseNameInput.value.trim() || '골프스코어카드';
             link.download = `${courseName}_${date}.png`;
             link.href = canvas.toDataURL('image/png');
             document.body.appendChild(link);
@@ -176,6 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(error => {
             console.error('이미지 저장 중 오류 발생:', error);
             alert('스코어카드 이미지를 저장하는 데 실패했습니다. 개발자 콘솔을 확인해주세요.');
+        }).finally(() => {
+            // ⭐ 캡처 후 클래스 제거 (원래 레이아웃으로 복원)
+            scorecardContainer.classList.remove('capture-layout');
         });
     });
 

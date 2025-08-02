@@ -10,7 +10,7 @@
     <div class="container">
         <h1>골프 스코어카드</h1>
 
-        <div id="course-info">
+        <div id="course-info-input-area">
             <div class="input-group">
                 <label for="golf-course-name">골프장 이름:</label>
                 <input type="text" id="golf-course-name" placeholder="예: 해운대 컨트리클럽">
@@ -22,32 +22,59 @@
         </div>
 
         <div id="scorecard-container">
-            <table id="scorecard-table">
+            <div id="course-info-display">
+                <h2 id="golf-course-name-display">골프장 이름</h2>
+                <p id="golf-course-type-display">코스 정보</p>
+            </div>
+
+            <table id="scorecard-table-out" class="scorecard-table-part">
                 <thead>
                     <tr>
                         <th>항목</th>
                         </tr>
                 </thead>
                 <tbody>
-                    <tr id="shots-row">
+                    <tr id="shots-row-out">
                         <th class="row-header">샷</th>
                         </tr>
-                    <tr id="putts-row">
+                    <tr id="putts-row-out">
                         <th class="row-header">퍼팅</th>
                         </tr>
-                    <tr id="total-row">
+                    <tr id="total-row-out">
                         <th class="row-header">합계</th>
                         </tr>
                 </tbody>
-                <tfoot>
+            </table>
+
+            <table id="scorecard-table-in" class="scorecard-table-part">
+                <thead>
+                    <tr>
+                        <th>항목</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    <tr id="shots-row-in">
+                        <th class="row-header">샷</th>
+                        </tr>
+                    <tr id="putts-row-in">
+                        <th class="row-header">퍼팅</th>
+                        </tr>
+                    <tr id="total-row-in">
+                        <th class="row-header">합계</th>
+                        </tr>
+                </tbody>
+            </table>
+
+            <table id="scorecard-overall-total" class="scorecard-table-part">
+                 <tfoot>
                     <tr>
                         <th class="row-header">총 합계</th>
-                        </tr>
+                        <td id="overall-total-value">0</td> </tr>
                 </tfoot>
             </table>
         </div>
 
-        <div id="input-controls">
+        <div id="input-controls-bottom">
             <div class="input-group">
                 <label for="hole-number">홀 번호:</label>
                 <select id="hole-number">
