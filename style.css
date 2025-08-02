@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap'); /* Noto Sans KR 폰트 임포트 */
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f8f8f8;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 20px 0;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 1000px;
+    text-align: center;
+}
+
+h1 {
+    color: #333333;
+    margin-bottom: 25px;
+    font-size: 2.2em;
+    font-weight: 700;
+}
+
+#course-info {
+    display: flex; /* 가로 정렬 */
+    justify-content: center; /* 가운데 정렬 */
+    gap: 20px; /* 요소 간 간격 */
+    margin-bottom: 30px; /* 스코어카드 테이블과의 간격 */
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+#course-info .input-group {
+    flex-grow: 1; /* 공간을 균등하게 채우도록 */
+    max-width: 400px; /* 최대 너비 지정 */
+}
+
+
+#scorecard-container {
+    overflow-x: auto;
+    margin-bottom: 30px;
+    border: 1px solid #c0c0c0;
+    border-radius: 5px;
+}
+
+#scorecard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#scorecard-table th, #scorecard-table td {
+    border: 1px solid #dcdcdc;
+    padding: 12px 8px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 0.95em;
+}
+
+#scorecard-table thead th {
+    background-color: #e0e0e0;
+    font-weight: bold;
+    color: #555555;
+    padding: 15px 8px;
+}
+
+#scorecard-table tbody .row-header,
+#scorecard-table tfoot .row-header {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #444444;
+    text-align: left;
+    padding-left: 15px;
+}
+#scorecard-table tfoot .row-header {
+    background-color: #cccccc;
+    color: #222222;
+}
+
+
+/* 짝수 행 배경색 (선택 사항) */
+#scorecard-table tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+
+#input-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    align-items: flex-end;
+    background-color: #ffffff;
+    padding: 25px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-top: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.input-group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333333;
+    font-size: 0.95em;
+}
+
+.input-group input[type="number"],
+.input-group select,
+.input-group input[type="text"] { /* text 타입 input 추가 */
+    padding: 10px 12px;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    font-size: 1.0em;
+    width: 120px;
+    box-sizing: border-box;
+}
+#course-info .input-group input[type="text"] {
+    width: 200px; /* 골프장 이름/코스 입력 필드 너비 조정 */
+}
+
+
+/* Number input 스핀 버튼 숨기기 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.0em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    margin-top: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+#save-as-image-btn {
+    background-color: #007bff;
+}
+
+#save-as-image-btn:hover {
+    background-color: #0069d9;
+}
+
+/* 모바일 화면을 위한 반응형 */
+@media (max-width: 768px) {
+    #course-info {
+        flex-direction: column; /* 세로로 정렬 */
+        align-items: center; /* 가운데 정렬 */
+    }
+    #course-info .input-group {
+        width: 100%; /* 너비 꽉 채우기 */
+        max-width: none;
+    }
+    #course-info .input-group input[type="text"] {
+        width: 100%;
+    }
+    #input-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    .input-group input[type="number"],
+    .input-group select {
+        width: 100%;
+    }
+    button {
+        width: 100%;
+    }
+}
